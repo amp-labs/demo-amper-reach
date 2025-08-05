@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-ampersand-primary: #6122E7;
+    --color-ampersand-primary-dark: #4e1bb8;
+    --color-ampersand-primary-light: #7839eb;
+    --font-ampersand: 'DM Sans', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  }
+
+  html {
+    font-family: var(--font-ampersand);
+  }
+}
+
+@layer utilities {
+  .bg-ampersand {
+    background-color: var(--color-ampersand-primary);
+  }
+  
+  .bg-ampersand-gradient {
+    background-image: linear-gradient(to right, var(--color-ampersand-primary), var(--color-ampersand-primary-light));
+  }
+  
+  .text-ampersand {
+    color: var(--color-ampersand-primary);
+  }
+  
+  .border-ampersand {
+    border-color: var(--color-ampersand-primary);
+  }
+  
+  .hover\:bg-ampersand-dark:hover {
+    background-color: var(--color-ampersand-primary-dark);
+  }
+}

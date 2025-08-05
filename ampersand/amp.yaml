@@ -1,0 +1,63 @@
+specVersion: 1.0.0
+integrations:
+  - name: amperreach-demo
+    displayName: AI Sales Assistant
+    provider: salesforce
+    read:
+      objects:
+        # Leads: Core object we're working with
+        - objectName: lead
+          destination: leadWebhook
+          # No schedule - we'll use subscribe for real-time
+          requiredFields:
+            - fieldName: id
+            - fieldName: firstname
+            - fieldName: lastname
+            - fieldName: email
+            - fieldName: company
+            - fieldName: title
+            - fieldName: ownerid # To track assignments
+          optionalFields:
+            - mapToName: outreach_subject
+              mapToDisplayName: AmperReach Email Subject
+              prompt: Where should we store AI-generated email subjects?
+            - mapToName: outreach_body
+              mapToDisplayName: AmperReach Email Body
+              prompt: Where should we store AI-generated email content?
+            - mapToName: outreach_score
+              mapToDisplayName: AmperReach Confidence Score
+              prompt: Where should we store the AI confidence score (0-100)?
+            - mapToName: outreach_personalization_notes
+              mapToDisplayName: AmperReach Personalization Notes
+              prompt: Where should we store personalization insights?
+          backfill:
+            defaultPeriod:
+              days: 7 # Just recent leads for demo
+
+        # Accounts: For company context
+        - objectName: account
+          destination: accountWebhook
+          schedule: "0 * * * *" # Hourly for reference data
+          requiredFields:
+            - fieldName: id
+            - fieldName: name
+            - fieldName: industry
+            - fieldName: website
+          backfill:
+            defaultPeriod:
+              days: 30
+
+    subscribe:
+      objects:
+        # Real-time updates when leads are created
+        - objectName: lead
+          destination: leadRealtimeWebhook
+          inheritFieldsAndMapping: true
+          createEvent:
+            enabled: always
+
+    write:
+      objects:
+        # Write AI insights back to leads
+        - objectName: lead
+          inheritMapping: true
