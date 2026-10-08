@@ -1,0 +1,6 @@
+# Where Ampersand delivers lead reads and change events.
+# `amp tunnel amperreach` points this at your machine while it runs.
+name: amperreach
+type: webhook
+metadata:
+  url: https://example.com/webhooks/ampersand

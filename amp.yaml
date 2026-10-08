@@ -1,0 +1,42 @@
+specVersion: 1.0.0
+integrations:
+  - name: amperreach
+    displayName: AmperReach
+    provider: salesforce
+
+    read:
+      objects:
+        - objectName: lead
+          destination: amperreach
+          schedule: "0 * * * *"
+          backfill:
+            defaultPeriod:
+              days: 30
+          requiredFields:
+            - fieldName: id
+            - fieldName: firstname
+            - fieldName: lastname
+            - fieldName: company
+            - fieldName: title
+            - fieldName: ownerid
+            - fieldName: status
+            - mapToName: outreach_email
+              mapToDisplayName: Outreach email
+              prompt: Which long text field should hold the draft email? (Not the Email field.)
+
+    subscribe:
+      objects:
+        - objectName: lead
+          destination: amperreach
+          inheritFieldsAndMapping: true
+          createEvent:
+            enabled: always
+          updateEvent:
+            enabled: always
+            requiredWatchFields:
+              - ownerid
+
+    write:
+      objects:
+        - objectName: lead
+          inheritMapping: true
