@@ -1,9 +1,22 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/ampersand-icon-dark.svg">
+    <img src=".github/assets/ampersand-icon.svg" height="48" alt="Ampersand">
+  </picture>
+</p>
+
 <h1 align="center">AmperReach</h1>
 
 <p align="center">
   A demo sales app that connects to each customer's Salesforce through <a href="https://www.ampersand.ai">Ampersand</a>.
   <br>
   It reads their leads, hears about changes within seconds, and writes a draft email back to each lead.
+</p>
+
+<p align="center">
+  <a href="https://github.com/amp-labs/demo-amper-reach/actions/workflows/ci.yml"><img src="https://github.com/amp-labs/demo-amper-reach/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://bun.com"><img src="https://img.shields.io/badge/bun-1.4-black?logo=bun" alt="Bun"></a>
+  <a href="https://viteplus.dev"><img src="https://img.shields.io/badge/vite%2B-1.1-black" alt="Vite+"></a>
 </p>
 
 ## What it shows
@@ -72,3 +85,14 @@
 
 - To show the install flow again, click **Salesforce settings** in the app and uninstall. After you reconnect, repeat step 6.
 - To clear the leads, restart `bun run dev`. The app keeps them in memory.
+
+---
+
+<p align="center">
+  <a href="https://www.ampersand.ai">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/assets/ampersand-logo-dark.svg">
+      <img src=".github/assets/ampersand-logo.svg" height="24" alt="Ampersand">
+    </picture>
+  </a>
+</p>
