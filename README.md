@@ -1,201 +1,98 @@
-# AmperReach Demo - Ampersand Salesforce Integration
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/ampersand-icon-dark.svg">
+    <img src=".github/assets/ampersand-icon.svg" height="48" alt="Ampersand">
+  </picture>
+</p>
 
-A demo application showcasing how Ampersand enables real-time Salesforce integrations with automatic webhook processing.
+<h1 align="center">AmperReach</h1>
 
-## Overview
+<p align="center">
+  A demo sales app that connects to each customer's Salesforce through <a href="https://www.ampersand.ai">Ampersand</a>.
+  <br>
+  It reads their leads, hears about changes within seconds, and writes a draft email back to each lead.
+</p>
 
-**AmperReach** demonstrates a simple but powerful use case:
+<p align="center">
+  <a href="https://github.com/amp-labs/demo-amper-reach/actions/workflows/ci.yml"><img src="https://github.com/amp-labs/demo-amper-reach/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://bun.com"><img src="https://img.shields.io/badge/bun-1.4-black?logo=bun" alt="Bun"></a>
+  <a href="https://viteplus.dev"><img src="https://img.shields.io/badge/vite%2B-1.1-black" alt="Vite+"></a>
+</p>
 
-1. **Connect to Salesforce** with one click using Ampersand
-2. **Backfill existing leads** automatically on connection
-3. **Receive webhooks** when leads are assigned to sales reps
-4. **Generate personalized emails** automatically using AI
-5. **Write back to Salesforce** custom fields
+## What it shows
 
-The app shows how Ampersand handles all the complex integration logic, letting you focus on your business logic.
+| Ampersand feature                                                             | Where                        |
+| ----------------------------------------------------------------------------- | ---------------------------- |
+| Install flow, where the customer connects Salesforce and maps the email field | `web/App.tsx`                |
+| Read: leads from the last 30 days, then every hour                            | `amp.yaml`                   |
+| On-demand read, behind **Sync now**                                           | `server/ampersand.ts`        |
+| Subscribe: new leads and owner changes                                        | `amp.yaml`, `subscribe.yaml` |
+| Write: the draft email, into the customer's mapped field                      | `server/ampersand.ts`        |
+| Signed webhooks, acknowledged immediately                                     | `server/webhook.ts`          |
 
-## What This Demo Shows
+## Requirements
 
-- **Simple Connection**: One-click Salesforce OAuth via Ampersand
-- **Automatic Backfill**: Existing leads are synced on connection
-- **Real-time Webhooks**: Activity feed showing lead assignment events
-- **Bi-directional Sync**: Reading leads and writing email data back
-- **Live Status**: See which leads have AI-generated emails
+- [Bun](https://bun.com) — runs the app
+- [Ampersand CLI](https://docs.ampersand.ai/cli/overview) — creates the project and deploys the integration
+- [cloudflared](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/) — lets `amp tunnel` deliver webhooks to your machine
+- A Salesforce org with an External Client App for Ampersand — see the [Salesforce guide](https://docs.ampersand.ai/provider-guides/salesforce)
 
-## Quick Start
+> [!NOTE]
+> `amp create:project`, `create:provider-app`, `tunnel`, and `update:installation` come from [open pull requests](https://github.com/amp-labs/cli/pulls?q=is%3Apr+is%3Aopen+author%3Acaiopizzol) to the Ampersand CLI and aren't released yet.
 
-### 1. Start the Backend
+## Setup
 
-The backend handles webhooks and stores data:
+1. Create the project and add your Salesforce app. `create:provider-app` asks for the consumer secret.
 
-```bash
-# Install backend dependencies
-cd backend
-npm install
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your API keys
-
-# Start the backend
-npm run dev
-# Backend runs on http://localhost:3001
-```
-
-### 2. Configure Ampersand Webhooks
-
-In your Ampersand dashboard, configure these webhook URLs:
-
-- **Lead Backfill**: `http://localhost:3001/webhooks/leadWebhook`
-- **Account Backfill**: `http://localhost:3001/webhooks/accountWebhook`
-- **Real-time Updates**: `http://localhost:3001/webhooks/leadRealtimeWebhook`
-
-For production or testing with real webhooks, use ngrok:
-
-```bash
-ngrok http 3001
-# Use the ngrok URL in Ampersand instead of localhost
-```
-
-### 3. Start the Frontend
-
-```bash
-# From the root directory
-npm install
-npm run dev
-# Frontend runs on http://localhost:5173
-```
-
-### 4. Connect Salesforce
-
-1. Click "Connect Salesforce"
-2. Complete OAuth flow
-3. Map custom fields when prompted
-4. Watch as leads are backfilled and processed
-
-## How It Works
-
-### Initial Connection
-
-1. User connects Salesforce via Ampersand
-2. Ampersand backfills recent leads (last 7 days)
-3. Backend processes each lead:
-   - Stores lead data
-   - If assigned, generates AI email
-   - Writes email to Salesforce custom fields
-4. Dashboard shows all leads with email status
-
-### Real-time Updates
-
-When a lead is assigned in Salesforce:
-
-1. Ampersand detects the change (OwnerId field)
-2. Sends webhook to backend
-3. Backend generates personalized email
-4. Email saved to Salesforce
-5. Dashboard updates automatically
-
-## Project Structure
-
-```
-amperreach/
-├── src/
-│   ├── components/
-│   │   ├── Dashboard.tsx          # Main view (polls backend)
-│   │   ├── LeadTable.tsx          # Shows leads with email status
-│   │   ├── ActivityFeed.tsx       # Real-time integration events
-│   │   └── ConnectionSetup.tsx    # Salesforce connection screen
-│   └── App.tsx                    # Main app with connection state
-├── backend/
-│   ├── server.js                  # Express server with webhooks
-│   └── .env.example              # Environment variables template
-└── ampersand/
-    └── amp.yaml                   # Ampersand integration config
-```
-
-## Key Integration Points
-
-### Ampersand Configuration (`amp.yaml`)
-
-```yaml
-read:
-  objects:
-    - objectName: lead
-      destination: leadWebhook # Backfill endpoint
-
-subscribe:
-  objects:
-    - objectName: lead
-      destination: leadRealtimeWebhook # Real-time endpoint
-      updateEvent:
-        requiredWatchFields:
-          - ownerid # Trigger on assignment
-```
-
-### Custom Fields Mapping
-
-- `outreach_subject` - Email subject line
-- `outreach_body` - Email content
-- `outreach_score` - AI confidence score (0-100)
-- `outreach_personalization_notes` - AI insights
-
-### Backend Endpoints
-
-- `POST /webhooks/leadWebhook` - Receives lead backfill data
-- `POST /webhooks/accountWebhook` - Receives account data
-- `POST /webhooks/leadRealtimeWebhook` - Receives real-time updates
-- `GET /api/state` - Frontend polls this for current data
-
-## Environment Variables
-
-### Frontend (.env)
-
-```
-VITE_AMPERSAND_API_KEY=your_key
-VITE_AMPERSAND_PROJECT_ID=your_project
-VITE_SALESFORCE_INTEGRATION_NAME=ai-sales-assistant
-```
-
-### Backend (.env)
-
-```
-AMPERSAND_API_KEY=your_key
-AMPERSAND_PROJECT=your_project_id
-INSTALLATION_ID=your_installation_id
-OPENAI_API_KEY=sk-your_openai_key  # Optional, has fallback
-PORT=3001
-```
-
-## Development Tips
-
-1. **Use ngrok for real webhooks**:
-
-   ```bash
-   ngrok http 3001
+   ```sh
+   amp login
+   amp create:project amperreach
+   amp create:provider-app salesforce -p amperreach --client-id <consumer key> \
+     --scope api --scope refresh_token --scope offline_access
    ```
 
-2. **Check backend logs** to see webhook activity
+2. Deploy the webhook destination and the integration:
 
-3. **Frontend polls every 5 seconds** - you'll see updates quickly
+   ```sh
+   amp deploy:destination -p amperreach -i destination.yaml
+   amp deploy amp.yaml -p amperreach
+   ```
 
-4. **Test the flow**:
-   - Create a new lead in Salesforce (unassigned)
-   - Assign it to someone
-   - Watch the activity feed update
-   - See the email status change
+3. Copy `.env.example` to `.env` and fill it in. Each comment says where to find the value. You need two API keys from the Ampersand dashboard: a full key and a "UI Library" key.
 
-## What This Demo Is (and Isn't)
+4. Start the app and route webhooks to it. Run each command in its own terminal:
 
-**This demo IS:**
+   ```sh
+   bun install && bun run dev
+   amp listen --forward-to http://127.0.0.1:3000/webhooks/ampersand
+   amp tunnel amperreach -p amperreach
+   ```
 
-- A showcase of Ampersand's webhook capabilities
-- An example of backfill + real-time sync
-- A demonstration of bi-directional Salesforce integration
+5. Open http://localhost:3000 and connect Salesforce. Map the outreach email to a long text field, not the standard **Email** field, which rejects the draft. Leads from the last 30 days appear.
 
-**This demo is NOT:**
+   To add a dedicated field, use the [custom field API](https://docs.ampersand.ai/manage-customer-schemas) with a `__c` name, such as `AmperReach_Email__c`.
 
-- A full email client
-- Production-ready code
-- A replacement for Salesforce UI
+6. Turn on live events. The install flow saves read and write, but not subscribe:
 
-The focus is purely on showing how Ampersand makes complex integrations simple with webhooks and backfill.
+   ```sh
+   amp list:installations <integration ID> -p amperreach
+   amp update:installation <integration ID> <installation ID> -p amperreach -i subscribe.yaml
+   ```
+
+   Salesforce sends the first events 1–2 minutes later, sometimes up to 10. After that, changes arrive within seconds.
+
+## Reset the demo
+
+- To show the install flow again, click **Salesforce settings** in the app and uninstall. After you reconnect, repeat step 6.
+- To clear the leads, restart `bun run dev`. The app keeps them in memory.
+
+---
+
+<p align="center">
+  <a href="https://www.ampersand.ai">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/assets/ampersand-logo-dark.svg">
+      <img src=".github/assets/ampersand-logo.svg" height="24" alt="Ampersand">
+    </picture>
+  </a>
+</p>

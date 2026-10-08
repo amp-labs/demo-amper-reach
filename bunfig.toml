@@ -1,0 +1,3 @@
+[serve.static]
+# Only variables starting with PUBLIC_ reach the browser.
+env = "PUBLIC_*"

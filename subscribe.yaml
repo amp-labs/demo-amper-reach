@@ -1,0 +1,20 @@
+# Turns on live lead events for an existing installation:
+#   amp update:installation <integrationId> <installationId> -p amperreach -i subscribe.yaml
+# The embedded install UI saves read and write only, so subscribe is added here.
+updateMask:
+  - config.content.subscribe.objects.lead
+installation:
+  config:
+    content:
+      subscribe:
+        objects:
+          lead:
+            objectName: lead
+            destination: amperreach
+            inheritFieldsAndMappings: true
+            createEvent:
+              enabled: always
+            updateEvent:
+              enabled: always
+              requiredWatchFields:
+                - ownerid
