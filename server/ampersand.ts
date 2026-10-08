@@ -12,7 +12,12 @@ export async function updateLead(groupRef: string, id: string, fields: Record<st
   const res = await fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify({ groupRef, type: "update", mode: "synchronous", record: { id, ...fields } }),
+    body: JSON.stringify({
+      groupRef,
+      type: "update",
+      mode: "synchronous",
+      record: { id, ...fields },
+    }),
   });
   if (!res.ok) throw new Error(`Write failed (${res.status}): ${await res.text()}`);
 }

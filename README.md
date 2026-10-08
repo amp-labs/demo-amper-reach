@@ -8,14 +8,14 @@
 
 ## What it shows
 
-| Ampersand feature | Where |
-| --- | --- |
-| Install flow, where the customer connects Salesforce and maps the email field | `web/App.tsx` |
-| Read: leads from the last 30 days, then every hour | `amp.yaml` |
-| On-demand read, behind **Sync now** | `server/ampersand.ts` |
-| Subscribe: new leads and owner changes | `amp.yaml`, `subscribe.yaml` |
-| Write: the draft email, into the customer's mapped field | `server/ampersand.ts` |
-| Signed webhooks, acknowledged immediately | `server/webhook.ts` |
+| Ampersand feature                                                             | Where                        |
+| ----------------------------------------------------------------------------- | ---------------------------- |
+| Install flow, where the customer connects Salesforce and maps the email field | `web/App.tsx`                |
+| Read: leads from the last 30 days, then every hour                            | `amp.yaml`                   |
+| On-demand read, behind **Sync now**                                           | `server/ampersand.ts`        |
+| Subscribe: new leads and owner changes                                        | `amp.yaml`, `subscribe.yaml` |
+| Write: the draft email, into the customer's mapped field                      | `server/ampersand.ts`        |
+| Signed webhooks, acknowledged immediately                                     | `server/webhook.ts`          |
 
 ## Requirements
 

@@ -8,7 +8,10 @@ const company = { id: "acme", name: "Acme Inc." };
 const integration = "amperreach";
 
 export function App() {
-  const { isLoaded, isIntegrationInstalled, config } = useIsIntegrationInstalled(integration, company.id);
+  const { isLoaded, isIntegrationInstalled, config } = useIsIntegrationInstalled(
+    integration,
+    company.id,
+  );
   const [settings, setSettings] = useState(false);
 
   // Stays false forever if `amp.yaml` isn't deployed yet: run `amp deploy amp.yaml`.

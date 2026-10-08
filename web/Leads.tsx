@@ -15,7 +15,10 @@ type Activity = { at: string; text: string };
 const isOpen = (lead: Lead) => !lead.status.startsWith("Closed");
 
 export function Leads({ emailField }: { emailField: string | undefined }) {
-  const [data, setData] = useState<{ leads: Lead[]; activity: Activity[] }>({ leads: [], activity: [] });
+  const [data, setData] = useState<{ leads: Lead[]; activity: Activity[] }>({
+    leads: [],
+    activity: [],
+  });
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -26,7 +29,7 @@ export function Leads({ emailField }: { emailField: string | undefined }) {
       .then(setData);
 
   useEffect(() => {
-    refresh();
+    void refresh();
     const timer = setInterval(refresh, 2000);
     return () => clearInterval(timer);
   }, []);
