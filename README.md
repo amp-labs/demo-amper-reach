@@ -42,48 +42,54 @@
 
 ## Setup
 
-1. Create the project and add your Salesforce app. `create:provider-app` asks for the consumer secret.
+1. Pick a project name. Ampersand project names are globally unique, so choose one nobody else has taken. Later commands read it from `MY_PROJECT`, so export it in every terminal you use.
+
+   ```sh
+   export MY_PROJECT="<your project name>"
+   ```
+
+2. Create the project and add your Salesforce app. `create:provider-app` asks for the consumer secret.
 
    ```sh
    amp login
-   amp create:project amperreach
-   amp create:provider-app salesforce -p amperreach --client-id <consumer key> \
+   amp create:project "$MY_PROJECT"
+   amp create:provider-app salesforce -p "$MY_PROJECT" --client-id <consumer key> \
      --scope api --scope refresh_token --scope offline_access
    ```
 
-2. Deploy the webhook destination and the integration:
+3. Deploy the webhook destination and the integration:
 
    ```sh
-   amp deploy:destination -p amperreach -i destination.yaml
-   amp deploy amp.yaml -p amperreach
+   amp deploy:destination -p "$MY_PROJECT" -i destination.yaml
+   amp deploy amp.yaml -p "$MY_PROJECT"
    ```
 
-3. Copy `.env.example` to `.env` and fill it in. Each comment says where to find the value. You need two API keys from the Ampersand dashboard: a full key and a "UI Library" key.
+4. Copy `.env.example` to `.env` and fill it in. Each comment says where to find the value. You need two API keys from the Ampersand dashboard: a full key and a "UI Library" key.
 
-4. Start the app and route webhooks to it. Run each command in its own terminal:
+5. Start the app and route webhooks to it. Run each command in its own terminal:
 
    ```sh
    bun install && bun run dev
    amp listen --forward-to http://127.0.0.1:3000/webhooks/ampersand
-   amp tunnel amperreach -p amperreach
+   amp tunnel amperreach -p "$MY_PROJECT"
    ```
 
-5. Open http://localhost:3000 and connect Salesforce. Map the outreach email to a long text field, not the standard **Email** field, which rejects the draft. Leads from the last 30 days appear.
+6. Open http://localhost:3000 and connect Salesforce. Map the outreach email to a long text field, not the standard **Email** field, which rejects the draft. Leads from the last 30 days appear.
 
    To add a dedicated field, use the [custom field API](https://docs.ampersand.ai/manage-customer-schemas) with a `__c` name, such as `AmperReach_Email__c`.
 
-6. Turn on live events. The install flow saves read and write, but not subscribe:
+7. Turn on live events. The install flow saves read and write, but not subscribe:
 
    ```sh
-   amp list:installations <integration ID> -p amperreach
-   amp update:installation <integration ID> <installation ID> -p amperreach -i subscribe.yaml
+   amp list:installations <integration ID> -p "$MY_PROJECT"
+   amp update:installation <integration ID> <installation ID> -p "$MY_PROJECT" -i subscribe.yaml
    ```
 
    Salesforce sends the first events 1–2 minutes later, sometimes up to 10. After that, changes arrive within seconds.
 
 ## Reset the demo
 
-- To show the install flow again, click **Salesforce settings** in the app and uninstall. After you reconnect, repeat step 6.
+- To show the install flow again, click **Salesforce settings** in the app and uninstall. After you reconnect, repeat step 7.
 - To clear the leads, restart `bun run dev`. The app keeps them in memory.
 
 ---
