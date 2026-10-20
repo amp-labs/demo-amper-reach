@@ -1,5 +1,5 @@
 # Turns on live lead events for an existing installation:
-#   amp update:installation <integrationId> <installationId> -p amperreach -i subscribe.yaml
+#   amp update:installation <integrationId> <installationId> -p $MY_PROJECT -i subscribe.yaml
 # The embedded install UI saves read and write only, so subscribe is added here.
 updateMask:
   - config.content.subscribe.objects.lead
